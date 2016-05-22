@@ -1,0 +1,27 @@
+{
+  "name": "paidTime-repo",
+  "description": "Time tracker and invoice generated using Google Sheets API.",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Jade Solomon",
+    "email": "iisjade@gmail.com"
+  },
+  "repository": "https://github.com/iisjade/paidTime-repo",
+  "scripts": {
+    "start": "./node_modules/nodemon/bin/nodemon.js server.js"
+  },
+  "dependencies": {
+    "body-parser": "~1.13.2",
+    "express": "^4.13.4",
+    "express-handlebars": "^3.0.0",
+    "google-auth-library": "^0.9.7",
+    "googleapis": "^7.0.0",
+    "morgan": "^1.7.0",
+    "sequelize": "^3.21.0",
+    "sqlite3": "^3.1.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.1"
+  }
+}
