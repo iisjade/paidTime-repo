@@ -46,28 +46,48 @@
                   rel="create" type="button">Create</button>
         </span>
       </div>
+      {{#each spreadsheets}}
       <div class="mdl-list__item">
         <a class="mdl-list__item-primary-content"
-           href="https://docs.google.com/spreadsheets/d/1tT6Q1fHBTb6L5pe4jOtx6FB8D-tLSzxm3sNCuG_cDnw/edit"
-           target="_blank">Orders (15:45:22)</a>
+           href="https://docs.google.com/spreadsheets/d/{{id}}/edit"
+           target="_blank">{{name}}</a>
         <span class="mdl-list__item-secondary-action">
           <button class="mdl-button mdl-js-button mdl-button--raised
                          mdl-js-ripple-effect"
-                  rel="sync" data-spreadsheetid="1tT6Q1fHBTb6L5pe4jOtx6FB8D-tLSzxm3sNCuG_cDnw"
+                  rel="sync" data-spreadsheetid="{{id}}"
                   type="button">Sync</button>
         </span>
       </div>
+      {{/each}}
+    </div>
+  </section>
+
+  <!-- Show timer -->
+  <<section id="timer"
+            class="mdl-cell mdl-cell--4-col relative">
+    <div class="mdl-list">
+      <div class="mdl-list__item">
+        <span class="mdl-list__item-primary-content mdl-layout-title">
+          Timer</span>
+        <span class="mdl-list__item-secondary-action">
+          <button class="mdl-button mdl-js-button mdl-button--raised
+                         mdl-js-ripple-effect mdl-button--colored"
+                  rel="create" type="button">Timer</button>
+        </span>
+      </div>
+      {{#each timer}}
       <div class="mdl-list__item">
         <a class="mdl-list__item-primary-content"
-           href="https://docs.google.com/spreadsheets/d/1s4vWGHPpuP9FQ-SeSKZLGvAHzpAaYf1I3kYhQPiRWwY/edit"
-           target="_blank">Orders (14:23:14)</a>
+           href="https://docs.google.com/spreadsheets/d/{{id}}/edit"
+           target="_blank">{{name}}</a>
         <span class="mdl-list__item-secondary-action">
           <button class="mdl-button mdl-js-button mdl-button--raised
                          mdl-js-ripple-effect"
-                  rel="sync" data-spreadsheetid="1s4vWGHPpuP9FQ-SeSKZLGvAHzpAaYf1I3kYhQPiRWwY"
-                  type="button">Sync</button>
+                  rel="sync" data-spreadsheetid="{{id}}"
+                  type="button">Clock Out</button>
         </span>
       </div>
+      {{/each}}
     </div>
   </section>
 </div>
