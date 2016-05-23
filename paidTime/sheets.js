@@ -85,12 +85,13 @@ SheetsHelper.prototype.createSpreadsheet = function(title, callback) {
   });
 };
 
+
 var COLUMNS = [
   { field: 'id', header: 'ID' },
-  { field: 'customerName', header: 'Customer Name'},
-  { field: 'productCode', header: 'Product Code' },
-  { field: 'unitsOrdered', header: 'Units Ordered' },
-  { field: 'unitPrice', header: 'Unit Price' },
+  { field: 'date', header: 'date'},
+  { field: 'hours', header: 'hours' },
+  { field: 'description', header: 'description' },
+  { field: 'rate', header: 'rate' },
   { field: 'status', header: 'Status'}
 ];
 
@@ -130,13 +131,13 @@ function buildHeaderRowRequest(sheetId) {
 }
 
 /**
- * Sync the orders to a spreadsheet.
+ * Sync the entries to a spreadsheet.
  * @param  {string}   spreadsheetId The ID of the spreadsheet.
  * @param  {string}   sheetId       The ID of the sheet.
- * @param  {Array}    orders        The list of orders.
+ * @param  {Array}    entries        The list of entries.
  * @param  {Function} callback      The callback function.
  */
-SheetsHelper.prototype.sync = function(spreadsheetId, sheetId, orders, callback) {
+SheetsHelper.prototype.sync = function(spreadsheetId, sheetId, entries, callback) {
   var requests = [];
   // Resize the sheet.
   requests.push({
@@ -144,7 +145,7 @@ SheetsHelper.prototype.sync = function(spreadsheetId, sheetId, orders, callback)
       properties: {
         sheetId: sheetId,
         gridProperties: {
-          rowCount: orders.length + 1,
+          rowCount: entries.length + 1,
           columnCount: COLUMNS.length
         }
       },
@@ -159,7 +160,7 @@ SheetsHelper.prototype.sync = function(spreadsheetId, sheetId, orders, callback)
         rowIndex: 1,
         columnIndex: 0
       },
-      rows: buildRowsForOrders(orders),
+      rows: buildRowsForOrders(entries),
       fields: '*'
     }
   });
@@ -179,18 +180,18 @@ SheetsHelper.prototype.sync = function(spreadsheetId, sheetId, orders, callback)
 };
 
 /**
- * Builds an array of RowData from the orders provided.
- * @param  {Array} orders The orders.
+ * Builds an array of RowData from the entries provided.
+ * @param  {Array} entries The entries.
  * @return {Array}        The RowData.
  */
-function buildRowsForOrders(orders) {
-  return orders.map(function(order) {
+function buildRowsForOrders(entries) {
+  return entries.map(function(entry) {
     var cells = COLUMNS.map(function(column) {
       switch (column.field) {
-        case 'unitsOrdered':
+        case 'hours':
           return {
             userEnteredValue: {
-              numberValue: order.unitsOrdered
+              numberValue: entry.hours
             },
             userEnteredFormat: {
               numberFormat: {
@@ -200,10 +201,10 @@ function buildRowsForOrders(orders) {
             }
           };
           break;
-        case 'unitPrice':
+        case 'rate':
           return {
             userEnteredValue: {
-              numberValue: order.unitPrice
+              numberValue: entry.rate
             },
             userEnteredFormat: {
               numberFormat: {
@@ -216,7 +217,7 @@ function buildRowsForOrders(orders) {
         case 'status':
           return {
             userEnteredValue: {
-              stringValue: order.status
+              stringValue: entry.status
             },
             dataValidation: {
               condition: {
@@ -235,7 +236,7 @@ function buildRowsForOrders(orders) {
         default:
           return {
             userEnteredValue: {
-              stringValue: order[column.field].toString()
+              stringValue: entry[column.field].toString()
             }
           };
       }
@@ -269,7 +270,7 @@ function buildPivotTableRequest(sourceSheetId, targetSheetId) {
                 },
                 rows: [
                   {
-                    sourceColumnOffset: getColumnForField('productCode').index,
+                    sourceColumnOffset: getColumnForField('description').index,
                     showTotals: false,
                     sortOrder: 'ASCENDING'
                   }
@@ -277,14 +278,14 @@ function buildPivotTableRequest(sourceSheetId, targetSheetId) {
                 values: [
                   {
                     summarizeFunction: 'SUM',
-                    sourceColumnOffset: getColumnForField('unitsOrdered').index
+                    sourceColumnOffset: getColumnForField('hours').index
                   },
                   {
                     summarizeFunction: 'SUM',
                     name: 'Revenue',
                     formula: util.format("='%s' * '%s'",
-                        getColumnForField('unitsOrdered').header,
-                        getColumnForField('unitPrice').header)
+                        getColumnForField('hours').header,
+                        getColumnForField('rate').header)
                   }
                 ]
               }
@@ -381,3 +382,52 @@ function getColumnForField(field) {
     return result;
   });
 }
+
+/**
+ * Start timer
+ * @param  {string}   spreadsheetId The ID of the spreadsheet.
+ * @param  {string}   sheetId       The ID of the sheet.
+ * @param  {Array}    entries        The list of entries.
+ * @param  {Function} callback      The callback function.
+ */
+SheetsHelper.prototype.startTimer = function(spreadsheetId, sheetId, entries, callback) {
+  var requests = [];
+  // Resize the sheet.
+  requests.push({
+    updateSheetProperties: {
+      properties: {
+        sheetId: sheetId,
+        gridProperties: {
+          rowCount: entries.length + 1,
+          columnCount: COLUMNS.length
+        }
+      },
+      fields: 'gridProperties(rowCount,columnCount)'
+    }
+  });
+  // Set the cell values.
+  requests.push({
+    updateCells: {
+      start: {
+        sheetId: sheetId,
+        rowIndex: 1,
+        columnIndex: 0
+      },
+      rows: buildRowsForOrders(entries),
+      fields: '*'
+    }
+  });
+  // Send the batchUpdate request.
+  var request = {
+    spreadsheetId: spreadsheetId,
+    resource: {
+      requests: requests
+    }
+  };
+  this.service.spreadsheets.batchUpdate(request, function(err) {
+    if (err) {
+      return callback(err);
+    }
+    return callback();
+  });
+};

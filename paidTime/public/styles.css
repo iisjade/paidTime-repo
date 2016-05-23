@@ -17,13 +17,13 @@ h3 a {
 .block {
   display: block;
 }
-.order-details {
+.entry-details {
   border-spacing: 10px;
 }
-.order-details th {
+.entry-details th {
   text-align: right;
 }
-#orders .mdl-button--fab {
+#entries .mdl-button--fab {
   position: absolute;
   top: -20px;
   right: -20px;

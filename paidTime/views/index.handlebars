@@ -1,17 +1,17 @@
 <div class="mdl-grid">
-  <section id="orders" class="mdl-cell mdl-cell--8-col relative">
+  <section id="entries" class="mdl-cell mdl-cell--7-col relative">
     <div class="mdl-grid">
-      {{#each orders}}
+      {{#each entries}}
       <div class="mdl-cell mdl-cell--6-col mdl-card mdl-shadow--2dp">
         <div class="mdl-card__title">
-          <h2 class="mdl-card__title-text">Order #{{id}}</h2>
+          <h2 class="mdl-card__title-text">Entry #{{id}}</h2>
         </div>
         <div class="mdl-card__supporting-text">
-          <table class="order-details">
-            <tr><th>Customer</th><td>{{customerName}}</td></tr>
-            <tr><th>Product code</th><td>{{productCode}}</td></tr>
-            <tr><th>Units ordered</th><td>{{unitsOrdered}}</td></tr>
-            <tr><th>Unit price (USD)</th><td>{{unitPrice}}</td></tr>
+          <table class="entry-details">
+            <tr><th>Date</th><td>{{date}}</td></tr>
+            <tr><th>Hours</th><td>{{hours}}</td></tr>
+            <tr><th>Description</th><td>{{description}}</td></tr>
+            <tr><th>Rate (USD per hour)</th><td>{{rate}}</td></tr>
             <tr><th>Status</th><td>{{status}}</td></tr>
           </table>
         </div>
@@ -35,7 +35,7 @@
 
   <!-- Show spreadsheets -->
   <section id="spreadsheets"
-           class="mdl-cell mdl-cell--4-col relative">
+           class="mdl-cell mdl-cell--3-col relative">
     <div class="mdl-list">
       <div class="mdl-list__item">
         <span class="mdl-list__item-primary-content mdl-layout-title">
@@ -63,16 +63,15 @@
   </section>
 
   <!-- Show timer -->
-  <<section id="timer"
-            class="mdl-cell mdl-cell--4-col relative">
+  <section id="timer"
+            class="mdl-cell mdl-cell--2-col relative">
     <div class="mdl-list">
       <div class="mdl-list__item">
-        <span class="mdl-list__item-primary-content mdl-layout-title">
-          Timer</span>
+        <span class="mdl-list__item-primary-content mdl-layout-title">Timer</span>
         <span class="mdl-list__item-secondary-action">
           <button class="mdl-button mdl-js-button mdl-button--raised
                          mdl-js-ripple-effect mdl-button--colored"
-                  rel="create" type="button">Timer</button>
+                  rel="startTimer" type="button">Clock In</button>
         </span>
       </div>
       {{#each timer}}
@@ -80,7 +79,7 @@
         <a class="mdl-list__item-primary-content"
            href="https://docs.google.com/spreadsheets/d/{{id}}/edit"
            target="_blank">{{name}}</a>
-        <span class="mdl-list__item-secondary-action">
+        <span class="mdl-list__item-sefcondary-action">
           <button class="mdl-button mdl-js-button mdl-button--raised
                          mdl-js-ripple-effect"
                   rel="sync" data-spreadsheetid="{{id}}"
